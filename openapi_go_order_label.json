@@ -1,0 +1,491 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "GO! Connect Realtime Order & Label API",
+    "version": "2.0",
+    "description": "API for creating, updating, canceling shipments and generating labels for GO! Express & Logistics."
+  },
+  "servers": [
+    {
+      "url": "https://ws.api.general-overnight.com/external/ci"
+    },
+    {
+      "url": "https://ws-tst.api.general-overnight.com/external/ci",
+      "description": "Test environment"
+    }
+  ],
+  "paths": {
+    "/order/api/v1/createOrder": {
+      "post": {
+        "summary": "Create or update shipment order",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Order created or updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
+      }
+    },
+    "/order/api/v1/updateOrderStatus": {
+      "post": {
+        "summary": "Update order status",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status updated successfully"
+          }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
+      }
+    },
+    "/label/api/v1/generateLabelForhwb": {
+      "post": {
+        "summary": "Generate label for existing HWB",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LabelRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Label generated successfully"
+          }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "schemas": {
+      "OrderRequest": {
+        "type": "object",
+        "properties": {
+          "responsibleStation": {
+            "type": "string",
+            "maxLength": 3
+          },
+          "customerId": {
+            "type": "string",
+            "maxLength": 7
+          },
+          "shipment": {
+            "$ref": "#/components/schemas/Shipment"
+          },
+          "consignorAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "neutralAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "consigneeAddress": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "4",
+              "5"
+            ],
+            "description": "1 - ZPL Code\n2 - Base64 encoded PDF (4x6’’ package label)\n4 – Base64 encoded PDF (A4 houseway bill)\n5 – TPCL (TEC Printer Command Language)"
+          },
+          "packages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Package"
+            }
+          }
+        },
+        "required": [
+          "responsibleStation",
+          "customerId",
+          "shipment",
+          "consignorAddress",
+          "consigneeAddress"
+        ],
+        "description": "Request payload to create or update a shipment order including addresses, shipment details, label preferences, and package dimensions."
+      },
+      "Shipment": {
+        "type": "object",
+        "properties": {
+          "hwbNumber": {
+            "type": "string",
+            "maxLength": 12
+          },
+          "orderStatus": {
+            "type": "string",
+            "enum": [
+              "New",
+              "Released",
+              "Cancelled"
+            ]
+          },
+          "validation": {
+            "type": "string"
+          },
+          "service": {
+            "type": "string",
+            "enum": [
+              "ON",
+              "INT",
+              "LET",
+              "INL",
+              "PSN",
+              "PSI",
+              "ONC",
+              "LEC",
+              "DI"
+            ],
+            "description": "Service code for the shipment.\n- ON: GO! Overnight\n- INT: GO! Worldwide\n- LET: GO! Overnight - Letter\n- INL: GO! Worldwide - Letter\n- PSN: Parcel Service National\n- PSI: Parcel Service International\n- ONC: GO! Overnight coded delivery (Germany only)\n- LEC: GO! Overnight Letter coded delivery (Germany only)\n- DI: Direct Shipment (prior coordination required)"
+          },
+          "weight": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "customerReference": {
+            "type": "string"
+          },
+          "selfPickup": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "selfDelivery": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "dimensions": {
+            "type": "string"
+          },
+          "packageCount": {
+            "type": "string"
+          },
+          "freightCollect": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "identCheck": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "receiptNotice": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "isNeutralPickup": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "pickup": {
+            "$ref": "#/components/schemas/TimeWindow"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/TimeWindow"
+          },
+          "insurance": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "valueOfGoods": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "cashOnDelivery": {
+            "$ref": "#/components/schemas/Money"
+          }
+        },
+        "required": [
+          "service",
+          "weight",
+          "packageCount",
+          "pickup"
+        ],
+        "description": "Core shipment object containing all parameters needed for order creation, update, or cancellation."
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "name1": {
+            "type": "string"
+          },
+          "name2": {
+            "type": "string"
+          },
+          "name3": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "houseNumber": {
+            "type": "string"
+          },
+          "zipCode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "remarks": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "telephoneAvis": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          },
+          "deliveryCode": {
+            "type": "string"
+          },
+          "deliveryCodeEncryption": {
+            "type": "string",
+            "enum": [
+              "Yes",
+              "No"
+            ]
+          }
+        },
+        "description": "Address object used for consignor, consignee, and optionally neutral address."
+      },
+      "Package": {
+        "type": "object",
+        "properties": {
+          "length": {
+            "type": "string"
+          },
+          "width": {
+            "type": "string"
+          },
+          "height": {
+            "type": "string"
+          }
+        },
+        "description": "Single package object including optional dimensions."
+      },
+      "Money": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          }
+        },
+        "description": "Object representing a monetary amount and currency for insurance, value of goods or COD."
+      },
+      "TimeWindow": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "timeFrom": {
+            "type": "string"
+          },
+          "timeTill": {
+            "type": "string"
+          },
+          "avisFrom": {
+            "type": "string"
+          },
+          "avisTill": {
+            "type": "string"
+          },
+          "weekendOrHolidayIndicator": {
+            "type": "string",
+            "enum": [
+              "S",
+              "H"
+            ]
+          }
+        },
+        "description": "Object defining date and time windows for pickup or delivery."
+      },
+      "OrderResponse": {
+        "type": "object",
+        "properties": {
+          "hwbNumber": {
+            "type": "string"
+          },
+          "orderStatus": {
+            "type": "string"
+          },
+          "pickupDate": {
+            "type": "string"
+          },
+          "deliveryDate": {
+            "type": "string"
+          },
+          "transitInfo": {
+            "type": "object",
+            "properties": {
+              "datesVerified": {
+                "type": "string"
+              },
+              "addressesVerified": {
+                "type": "string"
+              },
+              "remarks": {
+                "type": "string"
+              }
+            }
+          },
+          "hwbOrPackageLabel": {
+            "type": "string"
+          },
+          "package": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "barcode": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "description": "Response from createOrder endpoint, including tracking information and label data."
+      },
+      "UpdateStatusRequest": {
+        "type": "object",
+        "properties": {
+          "responsibleStation": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "hwbNumber": {
+            "type": "string"
+          },
+          "shipment": {
+            "type": "object",
+            "properties": {
+              "orderStatus": {
+                "type": "string",
+                "enum": [
+                  "Released",
+                  "Cancelled"
+                ]
+              }
+            }
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "4",
+              "5"
+            ]
+          }
+        },
+        "description": "Payload to update the status of an existing shipment (e.g., release or cancel it)."
+      },
+      "LabelRequest": {
+        "type": "object",
+        "properties": {
+          "responsibleStation": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "hwb": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "4",
+              "5"
+            ]
+          }
+        },
+        "description": "Request payload to generate a label for a specific HWB (tracking number)."
+      }
+    }
+  }
+}
