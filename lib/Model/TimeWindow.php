@@ -259,6 +259,7 @@ class TimeWindow implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
+    public const WEEKEND_OR_HOLIDAY_INDICATOR_EMPTY = '';
     public const WEEKEND_OR_HOLIDAY_INDICATOR_S = 'S';
     public const WEEKEND_OR_HOLIDAY_INDICATOR_H = 'H';
 
@@ -270,6 +271,7 @@ class TimeWindow implements ModelInterface, ArrayAccess, \JsonSerializable
     public function getWeekendOrHolidayIndicatorAllowableValues()
     {
         return [
+            self::WEEKEND_OR_HOLIDAY_INDICATOR_EMPTY,
             self::WEEKEND_OR_HOLIDAY_INDICATOR_S,
             self::WEEKEND_OR_HOLIDAY_INDICATOR_H,
         ];
