@@ -373,6 +373,7 @@
           "weekendOrHolidayIndicator": {
             "type": "string",
             "enum": [
+              "",
               "S",
               "H"
             ]
