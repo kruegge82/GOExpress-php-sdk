@@ -131,7 +131,7 @@ try {
 ## `orderApiV1UpdateOrderStatusPost()`
 
 ```php
-orderApiV1UpdateOrderStatusPost($update_status_request)
+orderApiV1UpdateOrderStatusPost($update_status_request): \kruegge82\goexpress\Model\OrderResponse
 ```
 
 Update order status
@@ -158,7 +158,8 @@ $apiInstance = new kruegge82\goexpress\Api\DefaultApi(
 $update_status_request = new \kruegge82\goexpress\Model\UpdateStatusRequest(); // \kruegge82\goexpress\Model\UpdateStatusRequest
 
 try {
-    $apiInstance->orderApiV1UpdateOrderStatusPost($update_status_request);
+    $result = $apiInstance->orderApiV1UpdateOrderStatusPost($update_status_request);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling DefaultApi->orderApiV1UpdateOrderStatusPost: ', $e->getMessage(), PHP_EOL;
 }
@@ -172,7 +173,7 @@ try {
 
 ### Return type
 
-void (empty response body)
+[**\kruegge82\goexpress\Model\OrderResponse**](../Model/OrderResponse.md)
 
 ### Authorization
 
@@ -181,7 +182,7 @@ void (empty response body)
 ### HTTP request headers
 
 - **Content-Type**: `application/json`
-- **Accept**: Not defined
+- **Accept**: `application/json`
 
 [[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
 [[Back to Model list]](../../README.md#models)

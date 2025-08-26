@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **weight** | **string** |  |
 **content** | **string** |  | [optional]
 **customer_reference** | **string** |  | [optional]
+**cost_center** | **string** |  | [optional]
 **self_pickup** | **string** |  | [optional]
 **self_delivery** | **string** |  | [optional]
 **dimensions** | **string** |  | [optional]
